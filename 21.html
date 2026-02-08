@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>21</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="images/icon.png">
+</head>
+<body>
+    <!-- <div class="container">
+        <div class="row info">
+            <p>aicea butoane lalal sa mearga site ul</p>
+        </div>
+    </div> -->
+    <div class="container dealer">
+        <div class="row">
+            <div class="col-md-2 ">
+                <img src="images/dealer.png" alt="">
+            </div>
+            <div class="col-md-2 dealerstats ">
+                <ul id="dealerText">
+                </ul>
+            </div>
+            <div class="col-md-8 play">
+                <p id="win">INPUT A BET AND PRESS PLAY</p>
+            </div>
+        </div>
+        
+    </div>
+    <div class="container " id="dealertable">
+        <div class="row d-flex justify-content-center dealercards" id="dealercards">
+            
+
+        </div>
+    </div>
+    <div class="container" id="playertable">
+        <div class="row d-flex justify-content-center playercards" id="playercards"></div>
+    </div>
+    <div class="container stats">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-2 bet ">
+                <ul>Money
+                    <li id="money">1000</li>
+                </ul>
+            </div>
+            <div class="col-md-2 bet ">
+                <ul>Bet
+                    <li><input type="text" value="10" id="bet" autocomplete="off"></li>
+                </ul>
+            </div>
+            <div class="col-md-1   ">
+                <input class="btnPLAY btn btn-primary" type="button" value="PLAY" onclick="playGame()" id="btnPLAY">
+            </div>
+            <div class="col-md-1">
+                <input class="btnHIT btn btn-primary" type="button" value="HIT" onclick="hitPlayer()" id="btnHIT" disabled>
+            </div>
+            <div class="col-md-1 ">
+                <input class="btnSTAY btn btn-primary" type="button" value="STAY" onclick="stayPlayer()" id="btnSTAY" disabled>
+            </div>
+        </div>
+    </div>
+  
+
+  
+
+
+
+    
+</body>
+<script>
+    const dealertable = document.getElementById("dealercards");
+    const playertable = document.getElementById("playercards");
+    const moneyElement = document.getElementById("money");//elemtul money
+    const stats=document.getElementById("win");
+    const dealerText = document.getElementById("dealerText");
+    
+    let money = parseInt(moneyElement.textContent);//valoare propiu zisa
+   let visited = new Set();
+    var betElement ;
+    var betValue;
+    let bet=parseInt(betValue);
+    let vectorPlayer = [];
+    let copySecond;   
+    let vectorDealer = [];
+   
+    let randomIndex;
+    
+   
+  
+
+    const images = [
+            { src: "images/2_of_clubs.png", alt: "2" },
+            { src: "images/2_of_diamonds.png", alt: "2" },
+            { src: "images/2_of_hearts.png", alt: "2" },
+            { src: "images/2_of_spades.png", alt: "2" },
+
+            { src: "images/3_of_clubs.png", alt: "3" },
+            { src: "images/3_of_diamonds.png", alt: "3" },
+            { src: "images/3_of_hearts.png", alt: "3" },
+            { src: "images/3_of_spades.png", alt: "3" },
+
+            { src: "images/4_of_clubs.png", alt: "4" },
+            { src: "images/4_of_diamonds.png", alt: "4" },
+            { src: "images/4_of_hearts.png", alt: "4" },
+            { src: "images/4_of_spades.png", alt: "4" },
+
+            { src: "images/5_of_clubs.png", alt: "5" },
+            { src: "images/5_of_diamonds.png", alt: "5" },
+            { src: "images/5_of_hearts.png", alt: "5" },
+            { src: "images/5_of_spades.png", alt: "5" },
+
+            { src: "images/6_of_clubs.png", alt: "6" },
+            { src: "images/6_of_diamonds.png", alt: "6" },
+            { src: "images/6_of_hearts.png", alt: "6" },
+            { src: "images/6_of_spades.png", alt: "6" },
+
+            { src: "images/7_of_clubs.png", alt: "7" },
+            { src: "images/7_of_diamonds.png", alt: "7" },
+            { src: "images/7_of_hearts.png", alt: "7" },
+            { src: "images/7_of_spades.png", alt: "7" },
+
+            { src: "images/8_of_clubs.png", alt: "8" },
+            { src: "images/8_of_diamonds.png", alt: "8" },
+            { src: "images/8_of_hearts.png", alt: "8" },
+            { src: "images/8_of_spades.png", alt: "8" },
+
+            { src: "images/9_of_clubs.png", alt: "9" },
+            { src: "images/9_of_diamonds.png", alt: "9" },
+            { src: "images/9_of_hearts.png", alt: "9" },
+            { src: "images/9_of_spades.png", alt: "9" },
+
+            { src: "images/10_of_clubs.png", alt: "10" },
+            { src: "images/10_of_diamonds.png", alt: "10" },
+            { src: "images/10_of_hearts.png", alt: "10" },
+            { src: "images/10_of_spades.png", alt: "10" },
+
+            { src: "images/ace_of_clubs.png", alt: "11" },
+            { src: "images/ace_of_diamonds.png", alt: "11" },
+            { src: "images/ace_of_spades.png", alt: "11" },
+            {src:"images/ace_of_hearts.png",alt:"11"},
+
+            { src: "images/jack_of_clubs2.png", alt: "10" },
+            { src: "images/jack_of_diamonds2.png", alt: "10" },
+            { src: "images/jack_of_hearts2.png", alt: "10" },
+            { src: "images/jack_of_spades2.png", alt: "10" },
+
+            { src: "images/queen_of_clubs2.png", alt: "10" },
+            { src: "images/queen_of_diamonds2.png", alt: "10" },
+            { src: "images/queen_of_hearts2.png", alt: "10" },
+            { src: "images/queen_of_spades2.png", alt: "10" },
+
+            { src: "images/king_of_clubs2.png", alt: "10" },
+            { src: "images/king_of_diamonds2.png", alt: "10" },
+            { src: "images/king_of_hearts2.png", alt: "10" },
+            { src: "images/king_of_spades2.png", alt: "10" }
+        ];
+    const btnHIT=document.getElementById("btnHIT");
+    const btnPLAY=document.getElementById("btnPLAY");
+    const btnSTAY=document.getElementById("btnSTAY");
+    function clean() {
+      while (dealertable.firstChild) {
+            dealertable.removeChild(dealertable.firstChild);
+        }
+        while (playertable.firstChild) {
+            playertable.removeChild(playertable.firstChild);
+        }
+        vectorDealer=[];
+        vectorPlayer=[];
+        first=0;
+        howmuchCards=0;
+        visited.clear(); 
+        btnHIT.disabled=false;
+
+    }
+    function playGame(){
+        betElement=document.getElementById("bet");
+        betValue=betElement.value;
+        bet=parseInt(betValue);
+        btnPLAY.disabled=true;
+        dealerText.textContent="";
+        clean();
+        
+        if (isNaN(bet) || bet <= 0) {
+            stats.textContent = "Please enter a valid bet amount";
+            btnHIT.disabled=true;
+            btnPLAY.disabled=false;
+            return;
+            
+        }
+        if (bet > money) {
+            stats.textContent = "Insufficient funds";
+            btnHIT.disabled=true;
+            btnPLAY.disabled=false;
+            return;
+           
+        }
+        hitDealer();
+        hitDealer();
+        const dealerCards=dealertable.getElementsByTagName('img');
+        copySecond= dealerCards[1].src;
+        dealerCards[1].src= "images/spate.png";
+        
+        money = money - bet;
+        moneyElement.textContent = money;//probabil trebuie schimbat 
+        hitPlayer();
+        
+        btnHIT.disabled=false;
+    }
+    function hit(){
+        btnSTAY.disabled=false;
+         
+        const img = document.createElement('img');
+        do {
+            randomIndex = Math.floor(Math.random() * images.length);
+            img.src = images[randomIndex].src;
+            img.alt = images[randomIndex].alt;
+        } while (visited.has(img.src)); 
+        playertable.appendChild(img);
+        vectorPlayer.push(parseInt(img.alt));
+        visited.add(img.src); 
+        howmuchCards++;
+
+    
+       if (calculateScore(vectorPlayer)>=22) {
+            checkWinner();
+            btnHIT.disabled = true;
+           btnSTAY.disabled = true;
+        }
+        else {
+            stats.textContent = "YOU HAVE : " + calculateScore(vectorPlayer);
+
+        } 
+    }
+
+   
+    function hitPlayer(){
+            if(calculateScore(vectorPlayer)>=22){
+                btnHIT.disabled=true;
+                checkWinner();
+               
+            }
+            else{
+                stats.textContent = "YOU HAVE : " + calculateScore(vectorPlayer);
+                hit()
+
+            } 
+            
+
+    }
+    function hitDealer(){
+      
+        const img = document.createElement('img');
+       do {
+            randomIndex = Math.floor(Math.random() * images.length);
+            img.src = images[randomIndex].src;
+            img.alt = images[randomIndex].alt;
+        } while (visited.has(img.src)); 
+
+        dealertable.appendChild(img);
+        vectorDealer.push(parseInt(img.alt));
+        visited.add(img.src); 
+        howmuchCards++;
+        
+    }
+    function stayPlayer(){
+        while(calculateScore(vectorDealer)<17 ){
+           
+             hitDealer();
+             dealerText.textContent = "DEALER'S CARDS SUM " + calculateScore(vectorDealer);
+            
+            
+            }
+        dealerText.textContent = "DEALER'S CARDS SUM " + calculateScore(vectorDealer);
+        checkWinner();
+    }
+    function calculateScore(hand) {
+            let sum = 0;
+            let aces = 0;
+            hand.forEach(numb => {
+                sum += numb;
+                if (numb === 11) {
+                    aces++;
+                }
+            });
+            while (aces > 0 && sum  > 21) {
+                sum = sum-10;
+                aces--;
+            }
+            return sum;
+        }
+    
+        function checkWinner() {
+            const dealerCards = dealertable.getElementsByTagName('img');
+            dealerCards[1].src=copySecond;
+            dealerText.textContent= "DEALER'S CARDS SUM " + calculateScore(vectorDealer);
+            if (calculateScore(vectorPlayer) >= 22) {
+                stats.textContent = "Bust! You lose.";
+            } else if (calculateScore(vectorDealer) >= 22) {
+                stats.textContent = "Dealer busts! You win!";
+                money += bet * 2;
+            } else if (calculateScore(vectorPlayer) > calculateScore(vectorDealer)) {
+                stats.textContent = "You win!";
+                money += bet * 2;
+            } else if (calculateScore(vectorPlayer) < calculateScore(vectorDealer)) {
+                stats.textContent = "Dealer wins.";
+            } else {
+                stats.textContent = "It's a tie!";
+                money += bet;
+            }
+            money.textContent = money;//si aici din cauza elementului money , care probabill va
+            // fi de alt tip 
+            btnPLAY.disabled = false;
+            btnHIT.disabled=true;
+            btnSTAY.disabled=true;
+        }
+
+    
+    
+</script>
+</html>
